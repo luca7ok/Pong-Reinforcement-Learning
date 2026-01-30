@@ -1,0 +1,26 @@
+# --- Build System ---
+build/
+bin/
+lib/
+*.d
+*.o
+*.obj
+
+# --- Executables ---
+# Since we named your output 'main'
+main
+main.exe
+*.exe
+*.dll
+*.dylib
+*.so
+
+# --- Editor/IDE Settings ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
