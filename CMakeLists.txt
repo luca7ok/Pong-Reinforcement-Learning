@@ -12,8 +12,11 @@ find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
 
 include_directories(include)
 
-file(GLOB SOURCES "src/*.cpp")
-
-add_executable(main ${SOURCES})
+add_executable(main
+    src/main.cpp
+    src/Game.cpp
+    src/Ball.cpp
+    src/Paddle.cpp
+)
 
 target_link_libraries(main PRIVATE sfml-graphics sfml-window sfml-system)
