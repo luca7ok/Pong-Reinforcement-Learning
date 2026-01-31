@@ -17,6 +17,9 @@ add_executable(main
     src/Game.cpp
     src/Ball.cpp
     src/Paddle.cpp
+    src/Score.cpp
 )
 
 target_link_libraries(main PRIVATE sfml-graphics sfml-window sfml-system)
+
+file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
