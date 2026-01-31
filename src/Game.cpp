@@ -9,10 +9,8 @@ namespace C = Constants;
 Game::Game()
     : window{sf::VideoMode(C::WINDOW_WIDTH, C::WINDOW_HEIGHT), C::WINDOW_NAME},
       ball{},
-      paddlePlayer1{
-          sf::Vector2f(C::PADDLE_WALL_DISTANCE, C::WINDOW_HEIGHT / 2.0f - C::PADDLE_HEIGHT / 2.0f)},
-      paddlePlayer2{sf::Vector2f(C::WINDOW_WIDTH - C::PADDLE_WALL_DISTANCE,
-                                 C::WINDOW_HEIGHT / 2.0f - C::PADDLE_HEIGHT / 2.0f)},
+      paddlePlayer1{sf::Vector2f(C::PADDLE_P1_X, C::PADDLE_P1_Y)},
+      paddlePlayer2{sf::Vector2f(C::PADDLE_P2_X, C::PADDLE_P2_Y)},
       scorePlayer1{sf::Vector2f(C::SCORE_P1_X, C::SCORE_P1_Y), true},
       scorePlayer2{sf::Vector2f(C::SCORE_P2_X, C::SCORE_P2_Y), false} {};
 
@@ -43,7 +41,7 @@ void Game::render() {
 
     sf::VertexArray middleLine(sf::Lines, C::NO_LINES);
     for (int i = 0; i < C::NO_LINES; i++) {
-        middleLine[i].position = sf::Vector2f(window.getSize().x / 2, i * C::LINE_LENGTH);
+        middleLine[i].position = sf::Vector2f(C::WINDOW_WIDTH / 2, i * C::LINE_LENGTH);
     }
 
     window.draw(ball);
