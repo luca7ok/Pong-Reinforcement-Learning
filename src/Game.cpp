@@ -15,11 +15,17 @@ Game::Game()
       scorePlayer2{sf::Vector2f(C::SCORE_P2_X, C::SCORE_P2_Y), false} {};
 
 void Game::run() {
+    sf::Clock clock;
+
     while (window.isOpen()) {
         sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
         std::cout << mousePosition.x << " - " << mousePosition.y << '\n';
 
         handleInput();
+
+        sf::Time dtTime = clock.restart();
+        float dt = dtTime.asSeconds();
+        paddlePlayer2.update(dt);
 
         render();
     }
@@ -34,6 +40,15 @@ void Game::handleInput() {
             window.close();
         }
     }
+
+    sf::Vector2f velocity(0.f, 0.f);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+        velocity.y = -C::SPEED;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        velocity.y = +C::SPEED;
+    }
+    paddlePlayer2.setVelocity(velocity);
 }
 
 void Game::render() {
