@@ -19,7 +19,7 @@ private:
 
     void render();
 
-    bool checkCollisions(const Paddle& paddle);
+    std::pair<C::CollisionType, float> checkCollisions(const Paddle& paddle);
 
 public:
     Game();
@@ -27,4 +27,4 @@ public:
     ~Game() = default;
 
     void run();
-};
+};  // namespace C=Constantsclass Game

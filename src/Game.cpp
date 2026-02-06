@@ -29,8 +29,17 @@ void Game::run() {
 
         ball.update(dt);
 
-        if (checkCollisions(paddlePlayer1) || checkCollisions(paddlePlayer2)) {
-            ball.setVelocity(sf::Vector2f(-ball.getVelocity().x, 0.f));
+        if (ball.getVelocity().x < 0) {
+            auto [collisionType, penetration] = checkCollisions(paddlePlayer1);
+            if (collisionType != C::CollisionType::None) {
+                ball.collideWithPaddle(collisionType, penetration);
+            }
+
+        } else if (ball.getVelocity().x > 0) {
+            auto [collisionType, penetration] = checkCollisions(paddlePlayer2);
+            if (collisionType != C::CollisionType::None) {
+                ball.collideWithPaddle(collisionType, penetration);
+            }
         }
 
         render();
@@ -57,7 +66,7 @@ void Game::handleInput() {
     paddlePlayer2.setVelocity(velocity);
 }
 
-bool Game::checkCollisions(const Paddle& paddle) {
+std::pair<C::CollisionType, float> Game::checkCollisions(const Paddle& paddle) {
     float ballX1 = ball.getPosition().x;
     float ballX2 = ball.getPosition().x + C::BALL_WIDTH;
     float ballY1 = ball.getPosition().y;
@@ -68,10 +77,29 @@ bool Game::checkCollisions(const Paddle& paddle) {
     float paddleY1 = paddle.getPosition().y;
     float paddleY2 = paddle.getPosition().y + C::PADDLE_HEIGHT;
 
+    std::pair<C::CollisionType, float> contact = {C::CollisionType::None, 0.f};
+    float paddleUpperCut = paddleY1 + C::PADDLE_HEIGHT / 3.f;
+    float paddleLowerCut = paddleY1 + 2.f * C::PADDLE_HEIGHT / 3.f;
+
     if (ballX1 >= paddleX2 || ballX2 <= paddleX1 || ballY1 >= paddleY2 || ballY2 <= paddleY1) {
-        return false;
+        return contact;
     }
-    return true;
+
+    if (ballY2 > paddleY1 && ballY2 < paddleUpperCut) {
+        contact.first = C::CollisionType::Top;
+    } else if (ballY2 > paddleUpperCut && ballY2 < paddleLowerCut) {
+        contact.first = C::CollisionType::Middle;
+    } else {
+        contact.first = C::CollisionType::Bottom;
+    }
+
+    if (ball.getVelocity().x < 0) {
+        contact.second = paddleX2 - ballX1;
+    } else if (ball.getVelocity().x > 0) {
+        contact.second = paddleX1 - ballX2;
+    }
+
+    return contact;
 }
 
 void Game::render() {

@@ -32,5 +32,8 @@ namespace Constants {
     inline constexpr float SCORE_P2_Y{50.f};
 
     inline constexpr float PADDLE_SPEED{600.f};
-    inline constexpr float BALL_SPEED{350.f};
+    inline constexpr float INITIAL_BALL_SPEED{350.f};
+    inline constexpr float BALL_SPEED{600.f};
+
+    enum class CollisionType { None, Top, Middle, Bottom };
 }  // namespace Constants

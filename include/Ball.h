@@ -2,6 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Constants.h"
+
+namespace C = Constants;
+
 class Ball : public sf::Drawable {
 private:
     sf::RectangleShape shape;
@@ -15,6 +19,8 @@ public:
     ~Ball() = default;
 
     void update(float dt);
+
+    void collideWithPaddle(const C::CollisionType& type, float penetration);
 
     sf::Vector2f getPosition() const;
 
