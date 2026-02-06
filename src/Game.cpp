@@ -27,6 +27,12 @@ void Game::run() {
         float dt = dtTime.asSeconds();
         paddlePlayer2.update(dt);
 
+        ball.update(dt);
+
+        if (checkCollisions(paddlePlayer1) || checkCollisions(paddlePlayer2)) {
+            ball.setVelocity(sf::Vector2f(-ball.getVelocity().x, 0.f));
+        }
+
         render();
     }
 }
@@ -43,12 +49,29 @@ void Game::handleInput() {
 
     sf::Vector2f velocity(0.f, 0.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-        velocity.y = -C::SPEED;
+        velocity.y = -C::PADDLE_SPEED;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        velocity.y = +C::SPEED;
+        velocity.y = +C::PADDLE_SPEED;
     }
     paddlePlayer2.setVelocity(velocity);
+}
+
+bool Game::checkCollisions(const Paddle& paddle) {
+    float ballX1 = ball.getPosition().x;
+    float ballX2 = ball.getPosition().x + C::BALL_WIDTH;
+    float ballY1 = ball.getPosition().y;
+    float ballY2 = ball.getPosition().y + C::BALL_HEIGHT;
+
+    float paddleX1 = paddle.getPosition().x;
+    float paddleX2 = paddle.getPosition().x + C::PADDLE_WIDTH;
+    float paddleY1 = paddle.getPosition().y;
+    float paddleY2 = paddle.getPosition().y + C::PADDLE_HEIGHT;
+
+    if (ballX1 >= paddleX2 || ballX2 <= paddleX1 || ballY1 >= paddleY2 || ballY2 <= paddleY1) {
+        return false;
+    }
+    return true;
 }
 
 void Game::render() {

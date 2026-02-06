@@ -19,6 +19,8 @@ private:
 
     void render();
 
+    bool checkCollisions(const Paddle& paddle);
+
 public:
     Game();
 

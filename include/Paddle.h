@@ -9,14 +9,14 @@ private:
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-    sf::Vector2f getPosition() const;
-
 public:
     Paddle(sf::Vector2f position);
 
     ~Paddle() = default;
 
     void update(float dt);
+
+    sf::Vector2f getPosition() const;
 
     void setVelocity(sf::Vector2f newVelocity);
 };

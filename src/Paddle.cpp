@@ -4,7 +4,7 @@
 
 namespace C = Constants;
 
-Paddle::Paddle(sf::Vector2f position) : velocity{sf::Vector2f(0.f, 0.f)} {
+Paddle::Paddle(sf::Vector2f position) : velocity{sf::Vector2f(0, C::PADDLE_SPEED)} {
     shape.setSize(sf::Vector2f(C::PADDLE_WIDTH, C::PADDLE_HEIGHT));
     shape.setPosition(position);
 }
