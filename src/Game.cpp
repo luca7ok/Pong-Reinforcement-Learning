@@ -43,6 +43,14 @@ void Game::run() {
         }
 
         auto [collisionType, penetration] = checkWallCollision();
+
+        if (collisionType == C::CollisionType::Left) {
+            scorePlayer2.increment();
+
+        } else if (collisionType == C::CollisionType::Right) {
+            scorePlayer1.increment();
+        }
+        
         if (collisionType != C::CollisionType::None) {
             ball.collideWithWall(collisionType, penetration);
         }
@@ -117,12 +125,15 @@ std::pair<C::CollisionType, float> Game::checkWallCollision() {
 
     if (ballX1 < 0.f) {
         contact.first = C::CollisionType::Left;
+
     } else if (ballX2 > C::WINDOW_WIDTH) {
         contact.first = C::CollisionType::Right;
-    } else if (ballY1 < 0.f) {
+
+    } else if (ballY2 < 0.f) {
         contact.first = C::CollisionType::Top;
         contact.second = -ballY1;
-    } else if (ballY2 > C::WINDOW_HEIGHT) {
+
+    } else if (ballY1 > C::WINDOW_HEIGHT) {
         contact.first = C::CollisionType::Bottom;
         contact.second = C::WINDOW_HEIGHT - ballY2;
     }

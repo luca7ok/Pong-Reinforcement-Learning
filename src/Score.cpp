@@ -16,6 +16,12 @@ Score::Score(sf::Vector2f position, bool _rightAligned) : score{0}, rightAligned
     text.setPosition(position);
 }
 
+void Score::increment() {
+    score++;
+    text.setString(std::to_string(score));
+    updateOrigin();
+}
+
 void Score::updateOrigin() {
     sf::FloatRect bounds = text.getLocalBounds();
 

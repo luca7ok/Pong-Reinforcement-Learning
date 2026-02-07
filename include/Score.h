@@ -11,12 +11,12 @@ private:
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-    void increment();
-
     void updateOrigin();
 
 public:
     Score(sf::Vector2f position, bool rightAligned);
+
+    void increment();
 
     ~Score() = default;
 };
