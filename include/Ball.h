@@ -20,7 +20,9 @@ public:
 
     void update(float dt);
 
-    void collideWithPaddle(const C::CollisionType& type, float penetration);
+    void collideWithPaddle(const C::CollisionType& contactType, float penetration);
+
+    void collideWithWall(const C::CollisionType& contactType, float penetration);
 
     sf::Vector2f getPosition() const;
 

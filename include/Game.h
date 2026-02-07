@@ -19,7 +19,9 @@ private:
 
     void render();
 
-    std::pair<C::CollisionType, float> checkCollisions(const Paddle& paddle);
+    std::pair<C::CollisionType, float> checkPaddleCollision(const Paddle& paddle);
+
+    std::pair<C::CollisionType, float> checkWallCollision();
 
 public:
     Game();

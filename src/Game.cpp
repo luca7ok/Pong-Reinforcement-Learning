@@ -30,16 +30,21 @@ void Game::run() {
         ball.update(dt);
 
         if (ball.getVelocity().x < 0) {
-            auto [collisionType, penetration] = checkCollisions(paddlePlayer1);
+            auto [collisionType, penetration] = checkPaddleCollision(paddlePlayer1);
             if (collisionType != C::CollisionType::None) {
                 ball.collideWithPaddle(collisionType, penetration);
             }
 
         } else if (ball.getVelocity().x > 0) {
-            auto [collisionType, penetration] = checkCollisions(paddlePlayer2);
+            auto [collisionType, penetration] = checkPaddleCollision(paddlePlayer2);
             if (collisionType != C::CollisionType::None) {
                 ball.collideWithPaddle(collisionType, penetration);
             }
+        }
+
+        auto [collisionType, penetration] = checkWallCollision();
+        if (collisionType != C::CollisionType::None) {
+            ball.collideWithWall(collisionType, penetration);
         }
 
         render();
@@ -66,7 +71,7 @@ void Game::handleInput() {
     paddlePlayer2.setVelocity(velocity);
 }
 
-std::pair<C::CollisionType, float> Game::checkCollisions(const Paddle& paddle) {
+std::pair<C::CollisionType, float> Game::checkPaddleCollision(const Paddle& paddle) {
     float ballX1 = ball.getPosition().x;
     float ballX2 = ball.getPosition().x + C::BALL_WIDTH;
     float ballY1 = ball.getPosition().y;
@@ -97,6 +102,29 @@ std::pair<C::CollisionType, float> Game::checkCollisions(const Paddle& paddle) {
         contact.second = paddleX2 - ballX1;
     } else if (ball.getVelocity().x > 0) {
         contact.second = paddleX1 - ballX2;
+    }
+
+    return contact;
+}
+
+std::pair<C::CollisionType, float> Game::checkWallCollision() {
+    float ballX1 = ball.getPosition().x;
+    float ballX2 = ball.getPosition().x + C::BALL_WIDTH;
+    float ballY1 = ball.getPosition().y;
+    float ballY2 = ball.getPosition().y + C::BALL_HEIGHT;
+
+    std::pair<C::CollisionType, float> contact = {C::CollisionType::None, 0.f};
+
+    if (ballX1 < 0.f) {
+        contact.first = C::CollisionType::Left;
+    } else if (ballX2 > C::WINDOW_WIDTH) {
+        contact.first = C::CollisionType::Right;
+    } else if (ballY1 < 0.f) {
+        contact.first = C::CollisionType::Top;
+        contact.second = -ballY1;
+    } else if (ballY2 > C::WINDOW_HEIGHT) {
+        contact.first = C::CollisionType::Bottom;
+        contact.second = C::WINDOW_HEIGHT - ballY2;
     }
 
     return contact;

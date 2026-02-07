@@ -43,6 +43,23 @@ void Ball::collideWithPaddle(const C::CollisionType& contactType, float penetrat
     }
 }
 
+void Ball::collideWithWall(const C::CollisionType& contactType, float penetration) {
+    if (contactType == C::CollisionType::Top || contactType == C::CollisionType::Bottom) {
+        shape.setPosition(sf::Vector2f(shape.getPosition().x, shape.getPosition().y + penetration));
+        velocity.y = -velocity.y;
+
+    } else if (contactType == C::CollisionType::Left) {
+        shape.setPosition(sf::Vector2f(C::BALL_X, C::BALL_Y));
+        velocity.x = C::INITIAL_BALL_SPEED;
+        velocity.y = 0.75f * C::INITIAL_BALL_SPEED;
+
+    } else if (contactType == C::CollisionType::Right) {
+        shape.setPosition(sf::Vector2f(C::BALL_X, C::BALL_Y));
+        velocity.x = -C::INITIAL_BALL_SPEED;
+        velocity.y = 0.75f * C::INITIAL_BALL_SPEED;
+    }
+}
+
 sf::Vector2f Ball::getPosition() const {
     return shape.getPosition();
 }
