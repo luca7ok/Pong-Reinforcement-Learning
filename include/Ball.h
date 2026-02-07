@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Constants.h"
+#include "Paddle.h"
 
 namespace C = Constants;
 
@@ -13,6 +14,8 @@ private:
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+    void reset();
+
 public:
     Ball();
 
@@ -20,7 +23,7 @@ public:
 
     void update(float dt);
 
-    void collideWithPaddle(const C::CollisionType& contactType, float penetration);
+    void collideWithPaddle(const Paddle& paddle, float penetration);
 
     void collideWithWall(const C::CollisionType& contactType, float penetration);
 

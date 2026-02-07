@@ -32,13 +32,13 @@ void Game::run() {
         if (ball.getVelocity().x < 0) {
             auto [collisionType, penetration] = checkPaddleCollision(paddlePlayer1);
             if (collisionType != C::CollisionType::None) {
-                ball.collideWithPaddle(collisionType, penetration);
+                ball.collideWithPaddle(paddlePlayer1, penetration);
             }
 
         } else if (ball.getVelocity().x > 0) {
             auto [collisionType, penetration] = checkPaddleCollision(paddlePlayer2);
             if (collisionType != C::CollisionType::None) {
-                ball.collideWithPaddle(collisionType, penetration);
+                ball.collideWithPaddle(paddlePlayer2, penetration);
             }
         }
 
