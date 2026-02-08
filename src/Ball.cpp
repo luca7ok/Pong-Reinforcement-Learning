@@ -24,18 +24,30 @@ void Ball::collideWithPaddle(const Paddle& paddle, float penetration) {
 
     float paddleCenterY = paddle.getPosition().y + (C::PADDLE_HEIGHT / 2.f);
     float ballCenterY = shape.getPosition().y + (C::BALL_HEIGHT / 2.f);
-
     float relativeIntersectY =
         std::clamp((ballCenterY - paddleCenterY) / (C::PADDLE_HEIGHT / 2.f), -1.f, 1.f);
 
     float bounceAngle = relativeIntersectY * C::MAX_BOUNCE_ANGLE;
-    float directionX = (velocity.x > 0) ? -1.f : 1.f;
-    float newVelocityX = C::BALL_SPEED * std::cos(bounceAngle);
-    float newVelocityY = C::BALL_SPEED * std::sin(bounceAngle);
 
-    float minXSpeed = C::BALL_SPEED * 0.5f;
+    float currentSpeed = std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+    float speedMultiplier = C::INITIAL_SPEED_MULTIPLIER;
+    if (std::abs(relativeIntersectY) > 0.8f) {
+        speedMultiplier += 0.2f;
+    }
+    float newSpeed = currentSpeed * speedMultiplier;
+
+    newSpeed = std::min(newSpeed, C::MAX_BALL_SPEED);
+
+    float directionX = (velocity.x > 0) ? -1.f : 1.f;
+    float newVelocityX = newSpeed * std::cos(bounceAngle);
+    float newVelocityY = newSpeed * std::sin(bounceAngle);
+
+    float minXSpeed = newSpeed * 0.2f;
     if (std::abs(newVelocityX) < minXSpeed) {
         newVelocityX = (newVelocityX > 0) ? minXSpeed : -minXSpeed;
+
+        float adjustedY = std::sqrt(newSpeed * newSpeed - newVelocityX * newVelocityX);
+        newVelocityY = (newVelocityY > 0) ? adjustedY : -adjustedY;
     }
 
     velocity.x = newVelocityX * directionX;

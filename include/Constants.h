@@ -36,9 +36,10 @@ namespace Constants {
 
     inline constexpr float DEAD_ZONE{10.f};
     inline constexpr float PADDLE_SPEED{600.f};
-    inline constexpr float AI_PADDLE_SPEED{PADDLE_SPEED * 0.85f};
+    inline constexpr float AI_PADDLE_SPEED{PADDLE_SPEED * 0.9f};
     inline constexpr float INITIAL_BALL_SPEED{500.f};
-    inline constexpr float BALL_SPEED{1000.f};
+    inline constexpr float MAX_BALL_SPEED{1200.f};
+    inline constexpr float INITIAL_SPEED_MULTIPLIER{1.1f};
 
     inline constexpr float MAX_BOUNCE_ANGLE{60.f * (M_PI / 180.f)};
     inline constexpr float MAX_LAUNCH_ANGLE{25.f * (M_PI / 180.f)};
