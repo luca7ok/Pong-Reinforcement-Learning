@@ -34,12 +34,14 @@ namespace Constants {
     inline constexpr float SCORE_P2_X{WINDOW_WIDTH / 2.f + SCORE_NET_DISTANCE};
     inline constexpr float SCORE_P2_Y{50.f};
 
+    inline constexpr float DEAD_ZONE{10.f};
     inline constexpr float PADDLE_SPEED{600.f};
+    inline constexpr float AI_PADDLE_SPEED{PADDLE_SPEED * 0.85f};
     inline constexpr float INITIAL_BALL_SPEED{500.f};
     inline constexpr float BALL_SPEED{1000.f};
 
     inline constexpr float MAX_BOUNCE_ANGLE{60.f * (M_PI / 180.f)};
     inline constexpr float MAX_LAUNCH_ANGLE{25.f * (M_PI / 180.f)};
 
-    enum class CollisionType { None, Top, Middle, Bottom, Left, Right };
+    enum class CollisionType { None, Top, Paddle, Bottom, Left, Right };
 }  // namespace Constants

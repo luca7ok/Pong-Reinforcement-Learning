@@ -18,13 +18,13 @@ void Game::run() {
     sf::Clock clock;
 
     while (window.isOpen()) {
-        sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-        std::cout << mousePosition.x << " - " << mousePosition.y << '\n';
-
         handleInput();
+        updateHardCodedAI();
 
         sf::Time dtTime = clock.restart();
         float dt = dtTime.asSeconds();
+
+        paddlePlayer1.update(dt);
         paddlePlayer2.update(dt);
 
         ball.update(dt);
@@ -50,7 +50,7 @@ void Game::run() {
         } else if (collisionType == C::CollisionType::Right) {
             scorePlayer1.increment();
         }
-        
+
         if (collisionType != C::CollisionType::None) {
             ball.collideWithWall(collisionType, penetration);
         }
@@ -79,6 +79,19 @@ void Game::handleInput() {
     paddlePlayer2.setVelocity(velocity);
 }
 
+void Game::updateHardCodedAI() {
+    float paddleCenterY = paddlePlayer1.getPosition().y + (C::PADDLE_HEIGHT / 2.f);
+    float ballCenterY = ball.getPosition().y + (C::BALL_HEIGHT / 2.f);
+
+    sf::Vector2f velocity{0.f, 0.f};
+    if (ballCenterY < paddleCenterY - C::DEAD_ZONE) {
+        velocity.y = -C::AI_PADDLE_SPEED;
+    } else if (ballCenterY > paddleCenterY + C::DEAD_ZONE) {
+        velocity.y = C::AI_PADDLE_SPEED;
+    }
+    paddlePlayer1.setVelocity(velocity);
+}
+
 std::pair<C::CollisionType, float> Game::checkPaddleCollision(const Paddle& paddle) {
     float ballX1 = ball.getPosition().x;
     float ballX2 = ball.getPosition().x + C::BALL_WIDTH;
@@ -90,29 +103,19 @@ std::pair<C::CollisionType, float> Game::checkPaddleCollision(const Paddle& padd
     float paddleY1 = paddle.getPosition().y;
     float paddleY2 = paddle.getPosition().y + C::PADDLE_HEIGHT;
 
-    std::pair<C::CollisionType, float> contact = {C::CollisionType::None, 0.f};
-    float paddleUpperCut = paddleY1 + C::PADDLE_HEIGHT / 3.f;
-    float paddleLowerCut = paddleY1 + 2.f * C::PADDLE_HEIGHT / 3.f;
-
     if (ballX1 >= paddleX2 || ballX2 <= paddleX1 || ballY1 >= paddleY2 || ballY2 <= paddleY1) {
-        return contact;
+        return {C::CollisionType::None, 0.f};
     }
 
-    if (ballY2 > paddleY1 && ballY2 < paddleUpperCut) {
-        contact.first = C::CollisionType::Top;
-    } else if (ballY2 > paddleUpperCut && ballY2 < paddleLowerCut) {
-        contact.first = C::CollisionType::Middle;
-    } else {
-        contact.first = C::CollisionType::Bottom;
-    }
+    float penetraion = 0.f;
 
     if (ball.getVelocity().x < 0) {
-        contact.second = paddleX2 - ballX1;
+        penetraion = paddleX2 - ballX1;
     } else if (ball.getVelocity().x > 0) {
-        contact.second = paddleX1 - ballX2;
+        penetraion = paddleX1 - ballX2;
     }
 
-    return contact;
+    return {C::CollisionType::Paddle, penetraion};
 }
 
 std::pair<C::CollisionType, float> Game::checkWallCollision() {

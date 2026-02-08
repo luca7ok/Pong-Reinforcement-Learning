@@ -23,6 +23,8 @@ private:
 
     std::pair<C::CollisionType, float> checkWallCollision();
 
+    void updateHardCodedAI();
+
 public:
     Game();
 
