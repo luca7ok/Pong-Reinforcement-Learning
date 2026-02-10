@@ -24,3 +24,8 @@ main.exe
 # --- OS Files ---
 .DS_Store
 Thumbs.db
+
+.cache/
+
+checkpoints/*
+!checkpoints/.gitkeep

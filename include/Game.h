@@ -4,16 +4,20 @@
 
 #include "Ball.h"
 #include "Paddle.h"
+#include "RL_Structs.h"
 #include "Score.h"
+
+namespace RL = RL_Structs;
 
 class Game {
 private:
     sf::RenderWindow window;
     Ball ball;
-    Paddle paddlePlayer1;
-    Paddle paddlePlayer2;
-    Score scorePlayer1;
-    Score scorePlayer2;
+    Paddle leftPaddle;
+    Paddle rightPaddle;
+    Score leftScore;
+    Score rightScore;
+    bool shouldRender;
 
     void handleInput();
 
@@ -31,4 +35,12 @@ public:
     ~Game() = default;
 
     void run();
-};  // namespace C=Constantsclass Game
+
+    void reset();
+
+    std::tuple<RL::GameState, float, bool> step(int action);
+
+    RL::GameState getGameState() const;
+
+    void setShouldRender(bool renderMode);
+};
