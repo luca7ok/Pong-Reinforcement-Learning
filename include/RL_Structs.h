@@ -18,4 +18,4 @@ namespace RL_Structs {
         GameState nextState;
         bool done;
     };
-} // namespace RL_Structs
+}  // namespace RL_Structs

@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <SFML/Graphics/Color.hpp>
 
 #include "Constants.h"
 

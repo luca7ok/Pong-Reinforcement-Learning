@@ -1,8 +1,5 @@
 #include "NeuralNetwork.h"
 
-#include <torch/nn/module.h>
-#include <torch/serialize/archive.h>
-
 #include "RL_Structs.h"
 
 NeuralNetwork::NeuralNetwork(int inputSize, int hiddenSize, int outputSize) {
