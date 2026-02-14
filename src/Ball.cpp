@@ -1,14 +1,16 @@
 #include "Ball.h"
 
+#include <SFML/System/Vector2.hpp>
 #include <random>
 
 #include "Constants.h"
 
 namespace C = Constants;
 
-Ball::Ball() : velocity{sf::Vector2f{C::INITIAL_BALL_SPEED, 0.f}} {
-    shape.setSize(sf::Vector2f(C::BALL_WIDTH, C::BALL_HEIGHT));
-    shape.setPosition(sf::Vector2f(C::BALL_X, C::BALL_Y));
+Ball::Ball(sf::Vector2f _position, sf::Vector2f _velocity, sf::Vector2f _size)
+    : velocity{_velocity} {
+    shape.setSize(_size);
+    shape.setPosition(_position);
 };
 
 void Ball::update(float dt) {
@@ -23,7 +25,7 @@ void Ball::collideWithPaddle(const Paddle& paddle, float penetration) {
     shape.setPosition(sf::Vector2f(shape.getPosition().x + penetration, shape.getPosition().y));
 
     float paddleCenterY = paddle.getPosition().y + (C::PADDLE_HEIGHT / 2.f);
-    float ballCenterY = shape.getPosition().y + (C::BALL_HEIGHT / 2.f);
+    float ballCenterY = shape.getPosition().y + (shape.getSize().y / 2.f);
     float relativeIntersectY =
         std::clamp((ballCenterY - paddleCenterY) / (C::PADDLE_HEIGHT / 2.f), -1.f, 1.f);
 

@@ -1,17 +1,22 @@
 #include "Game.h"
+
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include "Constants.h"
 
 namespace C = Constants;
 
 Game::Game()
-    : window{sf::VideoMode(C::WINDOW_WIDTH, C::WINDOW_HEIGHT), C::WINDOW_NAME},
-      ball{},
-      leftPaddle{sf::Vector2f(C::PADDLE_P1_X, C::PADDLE_P1_Y)},
-      rightPaddle{sf::Vector2f(C::PADDLE_P2_X, C::PADDLE_P2_Y)},
-      leftScore{sf::Vector2f(C::SCORE_P1_X, C::SCORE_P1_Y), true},
-      rightScore{sf::Vector2f(C::SCORE_P2_X, C::SCORE_P2_Y), false},
+    : window{sf::VideoMode{C::WINDOW_WIDTH, C::WINDOW_HEIGHT}, C::WINDOW_NAME},
+      ball{sf::Vector2f{C::BALL_X, C::BALL_Y}, sf::Vector2f{C::INITIAL_BALL_SPEED, 0.f},
+           sf::Vector2f{C::BALL_WIDTH, C::BALL_HEIGHT}},
+      leftPaddle{sf::Vector2f{C::PADDLE_P1_X, C::PADDLE_P1_Y}, sf::Vector2f{0.f, C::PADDLE_SPEED},
+                 sf::Vector2f{C::PADDLE_WIDTH, C::PADDLE_HEIGHT}},
+      rightPaddle{sf::Vector2f{C::PADDLE_P2_X, C::PADDLE_P2_Y}, sf::Vector2f{0.f, C::PADDLE_SPEED},
+                  sf::Vector2f{C::PADDLE_WIDTH, C::PADDLE_HEIGHT}},
+      leftScore{sf::Vector2f{C::SCORE_P1_X, C::SCORE_P1_Y}, true},
+      rightScore{sf::Vector2f{C::SCORE_P2_X, C::SCORE_P2_Y}, false},
       shouldRender{true} {};
 
 void Game::run() {

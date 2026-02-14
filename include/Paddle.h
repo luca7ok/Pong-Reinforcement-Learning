@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
 
 class Paddle : public sf::Drawable {
 private:
@@ -10,7 +11,7 @@ private:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 public:
-    Paddle(sf::Vector2f position);
+    Paddle(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f size);
 
     ~Paddle() = default;
 

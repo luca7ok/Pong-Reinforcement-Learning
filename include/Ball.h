@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include "Constants.h"
 #include "Paddle.h"
@@ -17,7 +18,7 @@ private:
     void reset();
 
 public:
-    Ball();
+    Ball(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f size);
 
     ~Ball() = default;
 

@@ -1,9 +1,5 @@
 #include "Score.h"
 
-#include "Constants.h"
-
-namespace C = Constants;
-
 Score::Score(sf::Vector2f position, bool _rightAligned) : score{0}, rightAligned{_rightAligned} {
     if (!font.loadFromFile("assets/micro5.ttf")) {
         throw std::runtime_error("Failed to load");

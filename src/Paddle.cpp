@@ -1,12 +1,15 @@
 #include "Paddle.h"
 
+#include <SFML/System/Vector2.hpp>
+
 #include "Constants.h"
 
 namespace C = Constants;
 
-Paddle::Paddle(sf::Vector2f position) : velocity{sf::Vector2f(0, C::PADDLE_SPEED)} {
-    shape.setSize(sf::Vector2f(C::PADDLE_WIDTH, C::PADDLE_HEIGHT));
-    shape.setPosition(position);
+Paddle::Paddle(sf::Vector2f _position, sf::Vector2f _velocity, sf::Vector2f _size)
+    : velocity{_velocity} {
+    shape.setSize(_size);
+    shape.setPosition(_position);
 }
 
 void Paddle::update(float dt) {
