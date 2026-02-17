@@ -2,9 +2,6 @@
 
 #include <torch/optim/adam.h>
 
-#include <deque>
-#include <memory>
-
 #include "NeuralNetwork.h"
 #include "RL_Structs.h"
 #include "ReplayBuffer.h"
@@ -15,7 +12,7 @@ class Agent {
 private:
     NeuralNetwork policyNetwork;
     NeuralNetwork targetNetwork;
-    ReplayBuffer buffer;
+    ReplayBuffer memory;
     torch::optim::Adam optimizer;
 
     int batchSize;
@@ -27,7 +24,23 @@ private:
     int targetUpdateFreq;
 
 public:
-    Agent();
+    Agent(int inputSize, int hiddenSize, int outputSize, int capacity, int batchSize,
+          float learningRate, float gamma, float epsilon, float epsilonDecay, float epsilonMin,
+          int targetUpdateFreq);
 
-    ~Agent()
+    ~Agent() = default;
+
+    int selectAction(const RL::GameState& gameState);
+
+    void storeExperience(const RL::Experience& experience);
+
+    void learn();
+
+    void updateTargetNetwork();
+
+    void decayEpsilon();
+
+    void save(const std::string& filename);
+
+    void load(const std::string& filename);
 };

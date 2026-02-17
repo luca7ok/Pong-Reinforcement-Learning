@@ -73,14 +73,14 @@ void Ball::reset() {
     shape.setPosition(sf::Vector2f(C::BALL_X, C::BALL_Y));
 
     static std::random_device randomDevice;
-    static std::mt19937 gen(randomDevice());
+    static std::mt19937 rng(randomDevice());
 
     std::bernoulli_distribution distribution(0.5);
-    float directionX = distribution(gen) ? 1.f : -1.f;
+    float directionX = distribution(rng) ? 1.f : -1.f;
 
     std::uniform_real_distribution<float> angleDistribution(-C::MAX_LAUNCH_ANGLE,
                                                             C::MAX_LAUNCH_ANGLE);
-    float angle = angleDistribution(gen);
+    float angle = angleDistribution(rng);
 
     velocity.x = C::INITIAL_BALL_SPEED * std::cos(angle) * directionX;
     velocity.y = C::INITIAL_BALL_SPEED * std::sin(angle);
