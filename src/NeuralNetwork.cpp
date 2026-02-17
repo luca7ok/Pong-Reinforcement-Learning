@@ -27,14 +27,14 @@ int NeuralNetwork::predictAction(const RL::GameState& gameState) {
     return output.argmax().item<int>();
 }
 
-void NeuralNetwork::save(const std::string& filename) {
+void NeuralNetwork::save(const std::string& path) {
     torch::serialize::OutputArchive archive;
     this->torch::nn::Module::save(archive);
-    archive.save_to(filename);
+    archive.save_to(path);
 }
 
-void NeuralNetwork ::load(const std::string& filename) {
+void NeuralNetwork ::load(const std::string& path) {
     torch::serialize::InputArchive archive;
-    archive.load_from(filename);
+    archive.load_from(path);
     this->torch::nn::Module::load(archive);
 }

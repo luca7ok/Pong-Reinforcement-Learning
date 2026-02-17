@@ -105,10 +105,14 @@ void Agent::learn() {
     }
 }
 
-void Agent::save(const std::string& filename) {
-    policyNetwork.save(filename);
+float Agent::getEpsilon() const {
+    return epsilon;
 }
 
-void Agent::load(const std::string& filename) {
-    policyNetwork.load(filename);
+void Agent::save(const std::string& path) {
+    policyNetwork.save(path);
+}
+
+void Agent::load(const std::string& path) {
+    policyNetwork.load(path);
 }

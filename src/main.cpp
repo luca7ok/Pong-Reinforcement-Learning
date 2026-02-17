@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Game.h"
+#include "Trainer.h"
 
 int main(int argc, char* argv[]) {
     bool trainingMode = false;
@@ -11,11 +12,15 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        Game game;
         if (trainingMode) {
-            game.setShouldRender(false);
+            Trainer trainer;
+            trainer.run();
+
         } else {
+            Game game;
             game.setShouldRender(true);
+            
+
             game.run();
         }
     } catch (const std::exception& e) {

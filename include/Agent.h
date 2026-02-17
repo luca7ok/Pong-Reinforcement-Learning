@@ -40,7 +40,9 @@ public:
 
     void decayEpsilon();
 
-    void save(const std::string& filename);
+    float getEpsilon() const;
 
-    void load(const std::string& filename);
+    void save(const std::string& path);
+
+    void load(const std::string& path);
 };

@@ -23,7 +23,7 @@ public:
 
     int predictAction(const RL::GameState& GameState);
 
-    void save(const std::string& filename);
+    void save(const std::string& path);
 
-    void load(const std::string& filename);
+    void load(const std::string& path);
 };
