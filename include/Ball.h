@@ -12,10 +12,9 @@ class Ball : public sf::Drawable {
 private:
     sf::RectangleShape shape;
     sf::Vector2f velocity;
+    sf::Vector2f initialPosition;
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-    void reset();
 
 public:
     Ball(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f size);
@@ -23,6 +22,8 @@ public:
     ~Ball() = default;
 
     void update(float dt);
+
+    void reset();
 
     void collideWithPaddle(const Paddle& paddle, float penetration);
 

@@ -7,7 +7,7 @@
 namespace C = Constants;
 
 Paddle::Paddle(sf::Vector2f _position, sf::Vector2f _velocity, sf::Vector2f _size)
-    : velocity{_velocity} {
+    : velocity{_velocity}, initialPosition{_position} {
     shape.setSize(_size);
     shape.setPosition(_position);
 }
@@ -24,6 +24,10 @@ void Paddle::update(float dt) {
     }
 
     shape.setPosition(newPosition);
+}
+
+void Paddle::reset() {
+    shape.setPosition(initialPosition);
 }
 
 void Paddle::setVelocity(sf::Vector2f newVelocity) {

@@ -63,6 +63,14 @@ void Game::run() {
     }
 }
 
+void Game::reset() {
+    ball.reset();
+    leftPaddle.reset();
+    rightPaddle.reset();
+    leftScore.reset();
+    rightScore.reset();
+}
+
 std::tuple<RL::GameState, float, bool> Game::step(int action) {
     sf::Vector2f velocity{0.f, 0.f};
     switch (action) {

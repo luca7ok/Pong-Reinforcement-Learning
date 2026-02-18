@@ -1,6 +1,9 @@
 #include "Score.h"
 
-Score::Score(sf::Vector2f position, bool _rightAligned) : score{0}, rightAligned{_rightAligned} {
+#include <SFML/System/Vector2.hpp>
+
+Score::Score(sf::Vector2f position, bool _rightAligned)
+    : score{0}, rightAligned{_rightAligned}, initialPosition(position) {
     if (!font.loadFromFile("assets/micro5.ttf")) {
         throw std::runtime_error("Failed to load");
     }
@@ -16,6 +19,14 @@ void Score::increment() {
     score++;
     text.setString(std::to_string(score));
     updateOrigin();
+}
+
+void Score::reset() {
+    score = 0;
+    text.setString(std::to_string(score));
+
+    updateOrigin();
+    text.setPosition(initialPosition);
 }
 
 void Score::updateOrigin() {

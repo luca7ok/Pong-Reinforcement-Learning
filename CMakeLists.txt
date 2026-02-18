@@ -21,6 +21,10 @@ add_executable(main
     src/Ball.cpp
     src/Paddle.cpp
     src/Score.cpp
+    src/Agent.cpp
+    src/NeuralNetwork.cpp
+    src/Trainer.cpp
+    src/ReplayBuffer.cpp
 )
 
 target_link_libraries(main PRIVATE 

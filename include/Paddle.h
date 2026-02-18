@@ -7,6 +7,7 @@ class Paddle : public sf::Drawable {
 private:
     sf::RectangleShape shape;
     sf::Vector2f velocity;
+    sf::Vector2f initialPosition;
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -16,6 +17,8 @@ public:
     ~Paddle() = default;
 
     void update(float dt);
+
+    void reset();
 
     sf::Vector2f getPosition() const;
 

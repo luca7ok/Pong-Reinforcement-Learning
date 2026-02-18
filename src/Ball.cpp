@@ -8,7 +8,7 @@
 namespace C = Constants;
 
 Ball::Ball(sf::Vector2f _position, sf::Vector2f _velocity, sf::Vector2f _size)
-    : velocity{_velocity} {
+    : velocity{_velocity}, initialPosition{_position} {
     shape.setSize(_size);
     shape.setPosition(_position);
 };
@@ -70,7 +70,7 @@ void Ball::collideWithWall(const C::CollisionType& contactType, float penetratio
 }
 
 void Ball::reset() {
-    shape.setPosition(sf::Vector2f(C::BALL_X, C::BALL_Y));
+    shape.setPosition(initialPosition);
 
     static std::random_device randomDevice;
     static std::mt19937 rng(randomDevice());

@@ -19,7 +19,6 @@ int main(int argc, char* argv[]) {
         } else {
             Game game;
             game.setShouldRender(true);
-            
 
             game.run();
         }
