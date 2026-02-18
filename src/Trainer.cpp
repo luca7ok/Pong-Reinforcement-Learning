@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Trainer.h"
 
 #include <filesystem>
@@ -80,7 +78,7 @@ void Trainer::clearChecpoints() {
 
 std::string Trainer::getNextModelPath() {
     int maxVersion = 0;
-    std::regex versionPattern(R"(v(\d+)\.pt)");  // Matches "v1.pt", "v20.pt" etc.
+    std::regex versionPattern(R"(v(\d+)\.pt)"); 
     std::smatch match;
 
     if (std::filesystem::exists("assets/models")) {
