@@ -25,6 +25,7 @@ add_executable(main
     src/NeuralNetwork.cpp
     src/Trainer.cpp
     src/ReplayBuffer.cpp
+    src/Console.cpp
 )
 
 target_link_libraries(main PRIVATE 
