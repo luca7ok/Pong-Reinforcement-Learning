@@ -6,6 +6,7 @@
 #include <string>
 
 #include "Agent.h"
+#include "Constants.h"
 #include "Game.h"
 
 void Trainer::run() {
@@ -64,7 +65,7 @@ void Trainer::run() {
             agent.save(checkpointPath);
         }
     }
-    std::string modelPath = getNextModelPath();
+    std::string modelPath = getNextModelPath(C::EPISODES);
     agent.save(modelPath);
     std::cout << "Training complete\n";
 }
@@ -81,7 +82,7 @@ void Trainer::clearChecpoints() {
     }
 }
 
-std::string Trainer::getNextModelPath() {
+int Trainer::getLatestModelVersion() {
     int maxVersion = 0;
     std::regex versionPattern(R"(v(\d+)\.pt)");
     std::smatch match;
@@ -98,5 +99,18 @@ std::string Trainer::getNextModelPath() {
         }
     }
 
-    return "assets/models/v" + std::to_string(maxVersion + 1) + ".pt";
+    return maxVersion;
+}
+
+std::string Trainer::getLatestModelPath() {
+    int latestVersion = getLatestModelVersion();
+    if (latestVersion == 0) {
+        return "";
+    }
+    return "assets/models/v" + std::to_string(latestVersion) + ".pt";
+}
+
+std::string Trainer::getNextModelPath(float episodes) {
+    int nextVersion = getLatestModelVersion() + 1;
+    return "assets/models/v" + std::to_string(nextVersion) + "_" + std::to_string(episodes) + ".pt";
 }

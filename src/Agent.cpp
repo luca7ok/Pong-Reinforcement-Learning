@@ -109,6 +109,10 @@ float Agent::getEpsilon() const {
     return epsilon;
 }
 
+void Agent::setEpsilon(float newEpsilon) {
+    epsilon = newEpsilon;
+}
+
 void Agent::save(const std::string& path) {
     policyNetwork.save(path);
 }

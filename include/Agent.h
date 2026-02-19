@@ -42,6 +42,8 @@ public:
 
     float getEpsilon() const;
 
+    void setEpsilon(float newEpsilon);
+
     void save(const std::string& path);
 
     void load(const std::string& path);
