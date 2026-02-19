@@ -2,6 +2,7 @@
 
 #include <ATen/ops/mse_loss.h>
 #include <torch/optim/adam.h>
+#include <torch/types.h>
 
 #include <random>
 
@@ -24,7 +25,7 @@ Agent::Agent(int inputSize, int hiddenSize, int outputSize, int capacity, int _b
     updateTargetNetwork();
 }
 
-int Agent::selectAction(const RL::GameState& gameState) {
+int Agent::selectAction(const RL::StackedState& gameState) {
     static std::random_device randomDevice;
     static std::mt19937 rng(randomDevice());
     std::uniform_real_distribution<> distribution(0.0, 1.0);
@@ -69,23 +70,25 @@ void Agent::learn() {
     std::vector<int> actionVec;
 
     for (const auto& experience : batch) {
-        stateVec.insert(
-            stateVec.end(),
-            {experience.state.ballX, experience.state.ballY, experience.state.ballVelocity.x,
-             experience.state.ballVelocity.y, experience.state.paddleY, experience.state.enemyY});
-        nextStateVec.insert(
-            nextStateVec.end(),
-            {experience.nextState.ballX, experience.nextState.ballY,
-             experience.nextState.ballVelocity.x, experience.nextState.ballVelocity.y,
-             experience.nextState.paddleY, experience.nextState.enemyY});
+        for (const auto& state : experience.state) {
+            stateVec.insert(stateVec.end(), {state.ballX, state.ballY, state.ballVelocity.x,
+                                             state.ballVelocity.y, state.paddleY, state.enemyY});
+        }
+
+        for (const auto& nextState : experience.nextState) {
+            nextStateVec.insert(nextStateVec.end(),
+                                {nextState.ballX, nextState.ballY, nextState.ballVelocity.x,
+                                 nextState.ballVelocity.y, nextState.paddleY, nextState.enemyY});
+        }
+
         actionVec.push_back(experience.action);
         rewardVec.push_back(experience.reward);
         doneVec.push_back(experience.done ? 0.f : 1.f);
     }
 
-    auto states = torch::tensor(stateVec).view({batchSize, 6});
-    auto nextStates = torch::tensor(nextStateVec).view({batchSize, 6});
-    auto actions = torch::tensor(actionVec).view({batchSize, 1});
+    auto states = torch::tensor(stateVec).view({batchSize, 24});
+    auto nextStates = torch::tensor(nextStateVec).view({batchSize, 24});
+    auto actions = torch::tensor(actionVec, torch::kInt64).view({batchSize, 1});
     auto rewards = torch::tensor(rewardVec).view({batchSize, 1});
     auto masks = torch::tensor(doneVec).view({batchSize, 1});
 
