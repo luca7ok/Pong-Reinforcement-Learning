@@ -22,14 +22,20 @@ Game::Game()
 
 void Game::run(Agent* agent) {
     sf::Clock clock;
+    RL::GameState initialState = getGameState();
+    RL::StackedState stackedState = {initialState, initialState, initialState, initialState};
+    int frameCounter = 0;
+    int actionIndex = 0;
 
     while (window.isOpen()) {
         handleInput(agent == nullptr);
 
         if (agent != nullptr) {
+            if (frameCounter % C::SKIP_FRAMES == 0) {
+                actionIndex = agent->selectAction(stackedState);
+            }
+
             int actionMap[] = {0, -1, 1};
-            RL::GameState state = getGameState();
-            int actionIndex = agent->selectAction(state);
             int gameAction = actionMap[actionIndex];
 
             sf::Vector2f velocity{0.f, 0.f};
@@ -39,6 +45,7 @@ void Game::run(Agent* agent) {
                 velocity.y = C::PADDLE_SPEED;
             }
             rightPaddle.setVelocity(velocity);
+            frameCounter++;
         }
 
         sf::Time dtTime = clock.restart();
@@ -73,6 +80,13 @@ void Game::run(Agent* agent) {
 
         if (collisionType != C::CollisionType::None) {
             ball.collideWithWall(collisionType, penetration);
+        }
+
+        if (agent != nullptr) {
+            for (int i = 0; i < 3; i++) {
+                stackedState[i] = stackedState[i + 1];
+            }
+            stackedState[3] = getGameState();
         }
 
         render();
@@ -123,17 +137,17 @@ std::tuple<RL::GameState, float, bool> Game::step(int action) {
         ball.collideWithWall(collisionType, penetration);
     }
 
-    if (ball.getVelocity().x < 0) {
+    if (ball.getVelocity().x < 0.0f) {
         auto [collisionType, penetration] = checkPaddleCollision(leftPaddle);
         if (collisionType != C::CollisionType::None) {
             ball.collideWithPaddle(leftPaddle, penetration);
         }
 
-    } else if (ball.getVelocity().x > 0) {
+    } else if (ball.getVelocity().x > 0.0f) {
         auto [collisionType, penetration] = checkPaddleCollision(rightPaddle);
         if (collisionType != C::CollisionType::None) {
             ball.collideWithPaddle(rightPaddle, penetration);
-            reward += 0.5f;
+            reward += 1.0f;
         }
     }
 

@@ -8,13 +8,14 @@
 #include "Agent.h"
 #include "Constants.h"
 #include "Game.h"
+#include "RL_Structs.h"
 
 Trainer::Trainer(int _episodes) : episodes{_episodes} {};
 
 void Trainer::run() {
-    clearChecpoints();
-    if (!std::filesystem::exists("assets/models")) {
-        std::filesystem::create_directories("assets/models");
+    clearCheckpoints();
+    if (!std::filesystem::exists("models")) {
+        std::filesystem::create_directories("models");
     }
 
     Agent agent{C::INPUT_LAYER_SIZE,
@@ -36,22 +37,43 @@ void Trainer::run() {
     for (int episode = 1; episode <= episodes; episode++) {
         game.reset();
 
-        RL::GameState state = game.getGameState();
+        RL::GameState initialState = game.getGameState();
+        RL::StackedState stackedState = {initialState, initialState, initialState, initialState};
         float totalReward = 0;
         bool done = false;
 
         while (!done) {
-            int actionIndex = agent.selectAction(state);
+            int actionIndex = agent.selectAction(stackedState);
             int gameAction = actionMap[actionIndex];
 
-            auto [nextState, reward, isDone] = game.step(gameAction);
-            done = isDone;
+            float accumulatedReward = 0.f;
+            RL::GameState lastState;
+            bool isDone = false;
 
-            agent.storeExperience({state, actionIndex, reward, nextState, isDone});
+            for (int i = 0; i < C::SKIP_FRAMES; i++) {
+                auto [stepState, stepReward, stepDone] = game.step(gameAction);
+                accumulatedReward += stepReward;
+                lastState = stepState;
+                isDone = stepDone;
+
+                if (isDone) {
+                    break;
+                }
+            }
+
+            RL::StackedState nextStackedStat = stackedState;
+            for (int i = 0; i < 3; i++) {
+                nextStackedStat[i] = nextStackedStat[i + 1];
+            }
+            nextStackedStat[3] = lastState;
+
+            agent.storeExperience(
+                {stackedState, actionIndex, accumulatedReward, nextStackedStat, isDone});
             agent.learn();
 
-            state = nextState;
-            totalReward += reward;
+            stackedState = nextStackedStat;
+            totalReward += accumulatedReward;
+            done = isDone;
         }
 
         agent.decayEpsilon();
@@ -72,7 +94,7 @@ void Trainer::run() {
     std::cout << "Training complete\n";
 }
 
-void Trainer::clearChecpoints() {
+void Trainer::clearCheckpoints() {
     if (std::filesystem::exists("checkpoints")) {
         for (const auto& entry : std::filesystem::directory_iterator("checkpoints")) {
             if (entry.path().filename().string() != ".gitkeep") {
@@ -90,8 +112,8 @@ int Trainer::getLatestModelVersion() {
     std::regex versionPattern(R"(v(\d+)(?:_\d+)?\.pt)");
     std::smatch match;
 
-    if (std::filesystem::exists("assets/models")) {
-        for (const auto& model : std::filesystem::directory_iterator("assets/models")) {
+    if (std::filesystem::exists("models")) {
+        for (const auto& model : std::filesystem::directory_iterator("models")) {
             std::string filename = model.path().filename().string();
             if (std::regex_match(filename, match, versionPattern)) {
                 int version = std::stoi(match[1]);
@@ -107,5 +129,5 @@ int Trainer::getLatestModelVersion() {
 
 std::string Trainer::getNextModelPath(int episodes) {
     int nextVersion = getLatestModelVersion() + 1;
-    return "assets/models/v" + std::to_string(nextVersion) + "_" + std::to_string(episodes) + ".pt";
+    return "models/v" + std::to_string(nextVersion) + "_" + std::to_string(episodes) + ".pt";
 }

@@ -1,6 +1,11 @@
 #include "NeuralNetwork.h"
 
+#include <torch/types.h>
+
+#include "Constants.h"
 #include "RL_Structs.h"
+
+namespace C = Constants;
 
 NeuralNetwork::NeuralNetwork(int inputSize, int hiddenSize, int outputSize) {
     inputLayer = register_module("fc1", torch::nn::Linear(inputSize, hiddenSize));
@@ -16,11 +21,20 @@ torch::Tensor NeuralNetwork::forward(torch::Tensor inputState) {
     return qValues;
 }
 
-int NeuralNetwork::predictAction(const RL::GameState& gameState) {
-    torch::Tensor inputTensor =
-        torch::tensor({gameState.ballX, gameState.ballY, gameState.ballVelocity.x,
-                       gameState.ballVelocity.y, gameState.paddleY, gameState.enemyY},
-                      torch::kFloat32);
+int NeuralNetwork::predictAction(const RL::StackedState& gameState) {
+    std::vector<float> flatState;
+    flatState.reserve(C::INPUT_LAYER_SIZE);
+
+    for (const auto& s : gameState) {
+        flatState.push_back(s.ballX);
+        flatState.push_back(s.ballY);
+        flatState.push_back(s.ballVelocity.x);
+        flatState.push_back(s.ballVelocity.y);
+        flatState.push_back(s.paddleY);
+        flatState.push_back(s.enemyY);
+    }
+
+    torch::Tensor inputTensor = torch::tensor(flatState, torch::kFloat32);
 
     torch::Tensor output = forward(inputTensor);
 

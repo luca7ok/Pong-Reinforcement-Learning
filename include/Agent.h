@@ -30,7 +30,7 @@ public:
 
     ~Agent() = default;
 
-    int selectAction(const RL::GameState& gameState);
+    int selectAction(const RL::StackedState& gameState);
 
     void storeExperience(const RL::Experience& experience);
 

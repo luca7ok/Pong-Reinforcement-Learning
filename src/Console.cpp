@@ -164,8 +164,8 @@ std::vector<std::string> ConsoleUI::getModels() const {
     std::vector<std::string> models;
     std::regex versionPattern(R"(v\d+(?:_\d+)?\.pt)");
 
-    if (std::filesystem::exists("assets/models")) {
-        for (const auto& model : std::filesystem::directory_iterator("assets/models")) {
+    if (std::filesystem::exists("models")) {
+        for (const auto& model : std::filesystem::directory_iterator("models")) {
             std::string filename = model.path().filename().string();
             if (std::regex_match(filename, versionPattern)) {
                 models.push_back(filename);

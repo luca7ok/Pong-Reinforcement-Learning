@@ -21,7 +21,7 @@ public:
 
     torch::Tensor forward(torch::Tensor x);
 
-    int predictAction(const RL::GameState& GameState);
+    int predictAction(const RL::StackedState& GameState);
 
     void save(const std::string& path);
 

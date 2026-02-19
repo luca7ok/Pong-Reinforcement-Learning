@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "SFML/Graphics.hpp"
 
 namespace RL_Structs {
@@ -11,11 +13,13 @@ namespace RL_Structs {
         float enemyY;
     };
 
+    using StackedState = std::array<GameState, 4>;
+
     struct Experience {
-        GameState state;
+        StackedState state;
         int action;
         float reward;
-        GameState nextState;
+        StackedState nextState;
         bool done;
     };
 }  // namespace RL_Structs

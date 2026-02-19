@@ -4,7 +4,7 @@ class Trainer {
 private:
     int episodes;
 
-    void clearChecpoints();
+    void clearCheckpoints();
 
     static int getLatestModelVersion();
 
