@@ -4,6 +4,7 @@
 
 #include "Console.h"
 
+// TODO look on game physics and make it better !!
 int main(int argc, char* argv[]) {
     try {
         ConsoleUI ui;

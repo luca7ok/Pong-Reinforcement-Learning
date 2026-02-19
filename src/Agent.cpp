@@ -69,6 +69,12 @@ void Agent::learn() {
     std::vector<float> stateVec, nextStateVec, rewardVec, doneVec;
     std::vector<int> actionVec;
 
+    stateVec.reserve(batchSize * 24);
+    nextStateVec.reserve(batchSize * 24);
+    rewardVec.reserve(batchSize);
+    doneVec.reserve(batchSize);
+    actionVec.reserve(batchSize);
+
     for (const auto& experience : batch) {
         for (const auto& state : experience.state) {
             stateVec.insert(stateVec.end(), {state.ballX, state.ballY, state.ballVelocity.x,
