@@ -38,13 +38,13 @@ void Trainer::run() {
         bool done = false;
 
         while (!done) {
-            int actionIdx = agent.selectAction(state);
-            int gameAction = actionMap[actionIdx];
+            int actionIndex = agent.selectAction(state);
+            int gameAction = actionMap[actionIndex];
 
             auto [nextState, reward, isDone] = game.step(gameAction);
             done = isDone;
 
-            agent.storeExperience({state, actionIdx, reward, nextState, isDone});
+            agent.storeExperience({state, actionIndex, reward, nextState, isDone});
             agent.learn();
 
             state = nextState;
@@ -53,7 +53,7 @@ void Trainer::run() {
 
         agent.decayEpsilon();
 
-        if (episode % 10 == 0) {
+        if (episode % 50 == 0) {
             std::cout << "Episode " << episode << ", reward: " << totalReward
                       << ", epsilon: " << agent.getEpsilon() << '\n';
         }
@@ -71,14 +71,19 @@ void Trainer::run() {
 
 void Trainer::clearChecpoints() {
     if (std::filesystem::exists("checkpoints")) {
-        std::filesystem::remove_all("checkpoints");
+        for (const auto& entry : std::filesystem::directory_iterator("checkpoints")) {
+            if (entry.path().filename().string() != ".gitkeep") {
+                std::filesystem::remove_all(entry.path());
+            }
+        }
+    } else {
+        std::filesystem::create_directories("checkpoints");
     }
-    std::filesystem::create_directories("checkpoints");
 }
 
 std::string Trainer::getNextModelPath() {
     int maxVersion = 0;
-    std::regex versionPattern(R"(v(\d+)\.pt)"); 
+    std::regex versionPattern(R"(v(\d+)\.pt)");
     std::smatch match;
 
     if (std::filesystem::exists("assets/models")) {
