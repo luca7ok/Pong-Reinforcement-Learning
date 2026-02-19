@@ -53,7 +53,7 @@ void Trainer::run() {
 
         agent.decayEpsilon();
 
-        if (episode % 50 == 0) {
+        if (episode % 25 == 0) {
             std::cout << "Episode " << episode << ", reward: " << totalReward
                       << ", epsilon: " << agent.getEpsilon() << '\n';
         }

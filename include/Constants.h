@@ -49,7 +49,7 @@ namespace Constants {
     inline constexpr float LEARNING_RATE{1e-3};
     inline constexpr float GAMMA{0.99f};
     inline constexpr float EPSILON{1.f};
-    inline constexpr float EPSILON_DECAY{0.95f};
+    inline constexpr float EPSILON_DECAY{0.9995f};
     inline constexpr float EPSILON_MIN{0.01f};
     inline constexpr int TARGET_UPDATE_FREQ{1000};
     inline constexpr int INPUT_LAYER_SIZE{6};

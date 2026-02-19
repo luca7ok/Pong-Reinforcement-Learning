@@ -4,6 +4,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "Constants.h"
+#include "RL_Structs.h"
 
 namespace C = Constants;
 
@@ -19,11 +20,26 @@ Game::Game()
       rightScore{sf::Vector2f{C::SCORE_P2_X, C::SCORE_P2_Y}, false},
       shouldRender{true} {};
 
-void Game::run() {
+void Game::run(Agent* agent) {
     sf::Clock clock;
 
     while (window.isOpen()) {
-        handleInput();
+        handleInput(agent == nullptr);
+
+        if (agent != nullptr) {
+            int actionMap[] = {0, -1, 1};
+            RL::GameState state = getGameState();
+            int actionIndex = agent->selectAction(state);
+            int gameAction = actionMap[actionIndex];
+
+            sf::Vector2f velocity{0.f, 0.f};
+            if (gameAction == -1) {
+                velocity.y = -C::PADDLE_SPEED;
+            } else {
+                velocity.y = C::PADDLE_SPEED;
+            }
+            rightPaddle.setVelocity(velocity);
+        }
 
         sf::Time dtTime = clock.restart();
         float dt = dtTime.asSeconds();
@@ -130,7 +146,7 @@ std::tuple<RL::GameState, float, bool> Game::step(int action) {
     return {nextState, reward, done};
 }
 
-void Game::handleInput() {
+void Game::handleInput(bool playerControls) {
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed ||
@@ -140,14 +156,16 @@ void Game::handleInput() {
         }
     }
 
-    sf::Vector2f velocity(0.f, 0.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-        velocity.y = -C::PADDLE_SPEED;
+    if (playerControls) {
+        sf::Vector2f velocity(0.f, 0.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+            velocity.y = -C::PADDLE_SPEED;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            velocity.y = +C::PADDLE_SPEED;
+        }
+        rightPaddle.setVelocity(velocity);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        velocity.y = +C::PADDLE_SPEED;
-    }
-    rightPaddle.setVelocity(velocity);
 }
 
 void Game::updateHardCodedAI() {
@@ -231,6 +249,10 @@ RL::GameState Game::getGameState() const {
 
 void Game::setShouldRender(bool renderMode) {
     shouldRender = renderMode;
+
+    if (!shouldRender && window.isOpen()) {
+        window.close();
+    }
 }
 
 void Game::render() {

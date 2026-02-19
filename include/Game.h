@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Agent.h"
 #include "Ball.h"
 #include "Paddle.h"
 #include "RL_Structs.h"
@@ -19,7 +20,7 @@ private:
     Score rightScore;
     bool shouldRender;
 
-    void handleInput();
+    void handleInput(bool playerControls);
 
     void render();
 
@@ -34,7 +35,7 @@ public:
 
     ~Game() = default;
 
-    void run();
+    void run(Agent* agent = nullptr);
 
     void reset();
 
