@@ -55,8 +55,7 @@ namespace Constants {
     inline constexpr int INPUT_LAYER_SIZE{6};
     inline constexpr int HIDDEN_LAYER_SIZE{128};
     inline constexpr int OUTPUT_LAYER_SIZE{3};
-
-    inline constexpr int EPISODES{1000};
+    inline constexpr const char* MODELS_PATH{"assets/models/"};
 
     enum class CollisionType { None, Top, Paddle, Bottom, Left, Right };
 }  // namespace Constants

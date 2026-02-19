@@ -2,14 +2,18 @@
 
 class Trainer {
 private:
+    int episodes;
+
     void clearChecpoints();
 
     static int getLatestModelVersion();
 
-    static std::string getNextModelPath(float episodes);
+    static std::string getNextModelPath(int episodes);
 
 public:
-    static std::string getLatestModelPath();
+    Trainer(int _episodes);
+
+    ~Trainer() = default;
 
     void run();
 };

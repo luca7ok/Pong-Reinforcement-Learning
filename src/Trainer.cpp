@@ -9,6 +9,8 @@
 #include "Constants.h"
 #include "Game.h"
 
+Trainer::Trainer(int _episodes) : episodes{_episodes} {};
+
 void Trainer::run() {
     clearChecpoints();
     if (!std::filesystem::exists("assets/models")) {
@@ -31,7 +33,7 @@ void Trainer::run() {
 
     int actionMap[] = {0, -1, 1};
 
-    for (int episode = 1; episode <= C::EPISODES; episode++) {
+    for (int episode = 1; episode <= episodes; episode++) {
         game.reset();
 
         RL::GameState state = game.getGameState();
@@ -65,7 +67,7 @@ void Trainer::run() {
             agent.save(checkpointPath);
         }
     }
-    std::string modelPath = getNextModelPath(C::EPISODES);
+    std::string modelPath = getNextModelPath(episodes);
     agent.save(modelPath);
     std::cout << "Training complete\n";
 }
@@ -84,7 +86,8 @@ void Trainer::clearChecpoints() {
 
 int Trainer::getLatestModelVersion() {
     int maxVersion = 0;
-    std::regex versionPattern(R"(v(\d+)\.pt)");
+
+    std::regex versionPattern(R"(v(\d+)(?:_\d+)?\.pt)");
     std::smatch match;
 
     if (std::filesystem::exists("assets/models")) {
@@ -102,15 +105,7 @@ int Trainer::getLatestModelVersion() {
     return maxVersion;
 }
 
-std::string Trainer::getLatestModelPath() {
-    int latestVersion = getLatestModelVersion();
-    if (latestVersion == 0) {
-        return "";
-    }
-    return "assets/models/v" + std::to_string(latestVersion) + ".pt";
-}
-
-std::string Trainer::getNextModelPath(float episodes) {
+std::string Trainer::getNextModelPath(int episodes) {
     int nextVersion = getLatestModelVersion() + 1;
     return "assets/models/v" + std::to_string(nextVersion) + "_" + std::to_string(episodes) + ".pt";
 }

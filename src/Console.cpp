@@ -6,6 +6,7 @@
 #include <limits>
 #include <regex>
 
+#include "Constants.h"
 #include "Game.h"
 #include "Trainer.h"
 
@@ -18,17 +19,22 @@ void ConsoleUI::run() {
 #endif
         printMenu();
 
+        std::string input;
+        std::getline(std::cin, input);
+
+        if (input.empty()) {
+            return;
+        }
+
         int option;
-        if (!(std::cin >> option)) {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::stringstream ss(input);
+
+        if (!(ss >> option)) {
             std::cout << "\nInvalid input\n";
             std::cout << "Press enter to continue...";
             std::cin.get();
             continue;
         }
-
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (option) {
             case 0:
@@ -62,7 +68,29 @@ void ConsoleUI::printMenu() {
 }
 
 void ConsoleUI::trainModel() {
-    Trainer trainer;
+    std::cout << "\nNumber of episodes: ";
+
+    std::string input;
+    std::getline(std::cin, input);
+
+    if (input.empty()) {
+        std::cout << "\nInvalid input\n";
+        std::cout << "Press enter to continue...";
+        std::cin.get();
+        return;
+    }
+
+    int episodes;
+    std::stringstream ss(input);
+
+    if (!(ss >> episodes) || episodes <= 0) {
+        std::cout << "\nInvalid input\n";
+        std::cout << "Press enter to continue...";
+        std::cin.get();
+        return;
+    }
+
+    Trainer trainer(episodes);
     trainer.run();
 }
 
@@ -84,13 +112,24 @@ void ConsoleUI::trainedVsHardcodedAI() {
 
     std::cout << "\nAvailable models:\n";
     for (int i = 0; i < models.size(); i++) {
-        std::cout << (i + 1) << ") " << models[i] << "\n";
+        std::cout << "[" << (i + 1) << "] " << models[i] << "\n";
     }
-    std::cout << "Enter number of model: ";
+    std::cout << "\nChoose a model: ";
+
+    std::string input;
+    std::getline(std::cin, input);
+
+    if (input.empty()) {
+        std::cout << "\nInvalid input\n";
+        std::cout << "Press enter to continue...";
+        std::cin.get();
+        return;
+    }
 
     int option;
+    std::stringstream ss(input);
 
-    if (!(std::cin >> option) || option < 1 || option > models.size()) {
+    if (!(ss >> option) || option < 1 || option > models.size()) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "\nInvalid option\n";
@@ -113,7 +152,7 @@ void ConsoleUI::trainedVsHardcodedAI() {
                 C::EPSILON_DECAY,
                 C::EPSILON_MIN,
                 C::TARGET_UPDATE_FREQ};
-    agent.load(selectedModel);
+    agent.load(C::MODELS_PATH + selectedModel);
     agent.setEpsilon(0.f);
 
     Game game;
