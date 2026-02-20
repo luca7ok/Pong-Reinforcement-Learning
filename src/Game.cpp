@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 #include "Constants.h"
 #include "RL_Structs.h"
@@ -163,10 +164,14 @@ std::tuple<RL::GameState, float, bool> Game::step(int action) {
 void Game::handleInput(bool playerControls) {
     sf::Event event;
     while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed ||
-            (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
-             sf::Keyboard::isKeyPressed(sf::Keyboard::Q))) {
+        if (event.type == sf::Event::Closed) {
             window.close();
+        }
+
+        if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::Q && (event.key.control || event.key.system)) {
+                window.close();
+            }
         }
     }
 
