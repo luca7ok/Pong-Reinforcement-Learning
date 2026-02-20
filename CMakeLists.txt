@@ -10,7 +10,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
-find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 find_package(Torch REQUIRED)
 
 include_directories(include)
@@ -32,7 +31,6 @@ target_link_libraries(main PRIVATE
     sfml-graphics
     sfml-window
     sfml-system
-    Eigen3::Eigen
     ${TORCH_LIBRARIES})
 
 target_include_directories(main PRIVATE ${TORCH_INCLUDE_DIRS})
