@@ -3,6 +3,9 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <chrono>
+#include <future>
+#include <random>
 
 #include "Constants.h"
 #include "RL_Structs.h"
@@ -25,28 +28,44 @@ void Game::run(Agent* agent) {
     sf::Clock clock;
     RL::GameState initialState = getGameState();
     RL::StackedState stackedState = {initialState, initialState, initialState, initialState};
+
     int frameCounter = 0;
     int actionIndex = 0;
+
+    std::future<int> futureAction;
+    bool isComputingAction = false;
 
     while (window.isOpen()) {
         handleInput(agent == nullptr);
 
         if (agent != nullptr) {
             if (frameCounter % C::SKIP_FRAMES == 0) {
-                actionIndex = agent->selectAction(stackedState);
-            }
+                if (!isComputingAction) {
+                    futureAction = std::async(std::launch::async,
+                                              [&]() { return agent->selectAction(stackedState); });
+                    isComputingAction = true;
+                }
 
-            int actionMap[] = {0, -1, 1};
-            int gameAction = actionMap[actionIndex];
+                if (isComputingAction &&
+                    futureAction.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+                    actionIndex = futureAction.get();
+                    isComputingAction = false;
 
-            sf::Vector2f velocity{0.f, 0.f};
-            if (gameAction == -1) {
-                velocity.y = -C::PADDLE_SPEED;
+                    int actionMap[] = {0, -1, 1};
+                    int gameAction = actionMap[actionIndex];
+
+                    sf::Vector2f velocity{0.f, 0.f};
+                    if (gameAction == -1) {
+                        velocity.y = -C::PADDLE_SPEED;
+                    } else {
+                        velocity.y = C::PADDLE_SPEED;
+                    }
+                    rightPaddle.setVelocity(velocity);
+                    frameCounter++;
+                }
             } else {
-                velocity.y = C::PADDLE_SPEED;
+                frameCounter++;
             }
-            rightPaddle.setVelocity(velocity);
-            frameCounter++;
         }
 
         sf::Time dtTime = clock.restart();
